@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/vue@2.5.17"></script>
+    <title>Vue.js 練習</title>
+</head>
+<body>
+
+<div id="app">
+    <h2>{{ message }}</h2>
+    <p>{{ items[0].name }}</p>
+    <p>小計: {{ totalPrice | numberWithDelimiter }}円</p>
+    <p>合計(税込): {{ totalPriceWithTax | numberWithDelimiter }}円</p>
+    <p v-show="!canBuy">
+        {{ 1000 | numberWithDelimiter }}円以上から購入いただけます
+    </p>
+</div>
+
+<script src="test.js"></script>
+</body>
+</html>
