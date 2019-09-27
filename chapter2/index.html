@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://unpkg.com/vue@2.5.17"></script>
+    <title>Vue.js 練習</title>
+</head>
+<body>
+
+<div id="app">
+    <h2>{{ message }}</h2>
+    <ul>
+        <li v-for="item in items" v-bind:key="item.name">
+            {{ item.name }}の購入数:<input type="number" v-model="item.quantity" min="0">
+        </li>
+    </ul>
+    <ul>
+        <li v-for="item in items" v-bind:key="item.name">
+            {{ item.name }}: {{ item.price }} ×　{{ item.quantity }} = {{ item.price * item.quantity | numberWithDelimiter }}円
+        </li>
+    </ul>
+    <p>小計: {{ totalPrice | numberWithDelimiter }}円</p>
+    <p>合計(税込): {{ totalPriceWithTax | numberWithDelimiter }}円</p>
+    <p v-show="!canBuy" :style="errorMessageStyle">
+        {{ 1000 | numberWithDelimiter }}円以上から購入いただけます
+    </p>
+    <button :disable="!canBuy" @click="buy">購入する</button>
+</div>
+
+<script src="index.js"></script>
+</body>
+</html>
