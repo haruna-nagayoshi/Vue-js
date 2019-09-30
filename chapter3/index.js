@@ -1,39 +1,53 @@
-Vue.component('description', {
-  template: '<p>季節ごとのくだもの一覧です。</p>',
-});
-
-Vue.component('fruits-table', {
-  template: `
-    <table>
-        <tr>
-            <th>季節</th>
-            <th>くだもの</th>
-        </tr>    
-        <tr>
-            <td>春</td>
-            <td>いちご</td>
-        </tr>   
-        <tr>
-            <td>夏</td>
-            <td>ぶどう</td>
-        </tr>  
-        <tr>
-            <td>秋</td>
-            <td>なし</td>
-        </tr>  
-        <tr>
-            <td>冬</td>
-            <td>みかん</td>
-        </tr>  
-    </table>
-  `,
-});
-
-new Vue({
-  el: '#fruits-list',
-  components: {
-    'fruits-list-title': {
-      template: '<h1>くだものリスト</h1>',
+Vue.component('fruits-item-name', {
+  props: {
+    fruitsItem: {
+      type: Object,
+      required: true,
     },
   },
-});
+  template: '<li>{{ fruitsItem.name }}</li>',
+})
+
+new Vue({
+  el: '#fruits-component',
+  data: {
+    fruitsItems: [
+      { name: '梨' },
+      { name: 'イチゴ' },
+    ],
+  },
+})
+
+const counterButton = Vue.extend({
+  template: '<span>{{ counter }}個<button @click="addToCart">追加</button></span>',
+  data() {
+    return {
+      counter: 0,
+    }
+  },
+  methods: {
+    addToCart() {
+      this.counter++
+      this.$emit('increment')
+    },
+  },
+})
+
+new Vue({
+  el: '#fruits-counter',
+  components: {
+    'counter-button': counterButton
+  },
+  data: {
+    total: 0,
+    fruits: [
+      { name: '梨' },
+      { name: 'イチゴ' }
+    ],
+  },
+  methods: {
+    incrementCartStatus() {
+      this.total++
+    }
+  }
+})

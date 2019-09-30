@@ -7,11 +7,18 @@
 </head>
 <body>
 
-<ul id="fruits-list">
-    <fruits-list-title></fruits-list-title>
-    <description></description>
-    <fruits-table></fruits-table>
+<ul id="fruits-component">
+    <ol>
+        <fruits-item-name v-for="fruit in fruitsItems" :key="fruit.name" :fruits-item="fruit"></fruits-item-name>
+    </ol>
 </ul>
+
+<div id="fruits-counter">
+    <div v-for="fruit in fruits">
+        {{ fruit.name }}: <counter-button @increment="incrementCartStatus"></counter-button>
+    </div>
+    <p>合計: {{ total }}</p>
+</div>
 
 <script src="index.js"></script>
 </body>
