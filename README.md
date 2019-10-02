@@ -28,9 +28,11 @@
         vue serve hello.vue --open
         ```
         http://localhost:1234/にアクセスすると結果が表示される
-    - Vue projectを作成
+    - Vue projectを新規作成
         ```
-        cd /app/src/chapter6/test-project
+        cd /app/src/chapter6/
+        vue create {プロジェクト名}
+        cd test-project
         npm run serve
         ```
         http://localhost:1234/にアクセスするとVueのwelcomeページが表示される
