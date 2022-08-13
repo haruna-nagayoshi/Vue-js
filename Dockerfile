@@ -2,7 +2,7 @@ FROM node:lts
 
 WORKDIR /app
 
-RUN apt update && \
+RUN apt-get update && \
     npm install -g npm && \
     npm install -g @vue/cli && \
     npm install -g @vue/cli-service-global
