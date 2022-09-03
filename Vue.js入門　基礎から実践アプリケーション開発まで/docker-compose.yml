@@ -1,7 +1,7 @@
 version: '3'
 services:
   vue-primer:
-    build: .
+    build: ..
     ports:
       - 1234:8080
     volumes:
