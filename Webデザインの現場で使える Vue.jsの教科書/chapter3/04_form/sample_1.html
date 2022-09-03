@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+<body>
+<h2>
+    入力フォームの双方向バインディング
+</h2>
+<div id="app">
+    <p>
+        入力した年齢：{{ age }}
+    </p>
+    <input type="text" name="age" v-model.number="age">
+
+    <p style="white-space: pre-line">
+        入力したメッセージ(先頭・末尾の全半角自動削除)：★{{ textarea }}★
+    </p>
+    <textarea name="textarea" rows="5" cols="30" v-model.trim="textarea"></textarea>
+
+    <br>
+    <label for="checkbox">{{ check }}</label>
+    <input type="checkbox" id="checkbox" v-model="check" true-value="1" false-value="0">
+
+    <p>
+        選択したくだもの：{{ fruits }}
+    </p>
+    <input type="checkbox" id="peach" value="もも" v-model="fruits" true-value="1" false-value="0">
+    <label for="peach">もも</label>
+    <input type="checkbox" id="grape" value="ぶどう" v-model="fruits" true-value="1" false-value="0">
+    <label for="grape">ぶどう</label>
+    <input type="checkbox" id="watermelon" value="スイカ" v-model="fruits" true-value="1" false-value="0">
+    <label for="watermelon">スイカ</label>
+
+    <p>
+        選択したプログラミング言語：{{ pickedProgrammingLanguage }}
+    </p>
+    <input type="radio" id="vue" value="Vue.js" v-model="pickedProgrammingLanguage">
+    <label for="vue">Vue.js</label>
+    <input type="radio" id="php" value="PHP" v-model="pickedProgrammingLanguage">
+    <label for="php">PHP</label>
+
+    <p>
+        選択した言語：{{ pickedLanguage }}
+    </p>
+    <select v-model="pickedLanguage">
+        <option disabled value="">Please select one.</option>
+        <option>Japanese</option>
+        <option>English</option>
+        <option>Chinese</option>
+    </select>
+
+    <p>
+        選択した言語(複数選択)：{{ pickedMultiLanguage }}
+    </p>
+    <select multiple v-model="pickedMultiLanguage">
+        <option disabled value="">Please select one.</option>
+        <option v-for="value in list">{{ value }}</option>
+    </select>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        created() {
+            // APIでの取得を想定
+            this.list = [
+                'Japanese',
+                'English',
+                'Spanish',
+            ]
+        },
+        data: {
+            age: 80,
+            textarea: 'テキストエリア',
+            check: false,
+            fruits: [],
+            pickedProgrammingLanguage: null,
+            pickedLanguage: null,
+            pickedMultiLanguage: [],
+            list: [],
+        },
+    })
+</script>
+</body>
+</html>
