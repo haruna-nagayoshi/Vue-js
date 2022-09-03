@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h2>
+        イベントの制御
+    </h2>
+    <button class="button" v-on:click="toggle">切替</button>
+    <p v-show="isActive">アクティブです</p>
+</div>
+<div id="app2">
+    <div @click="logging('祖先')" id="ancestor" style="background-color: blue; width: 200px; height: 100px">
+        <div @click="logging('親')" id="parent" style="background-color: red; width: 100px; height: 50px">
+            <div @click.stop.prevent="logging('子')" id="child">
+                <a href="https://www.google.com">
+                    click me!
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            isActive: false,
+        },
+        methods: {
+            toggle() {
+                this.isActive = ! this.isActive;
+            }
+        }
+    })
+
+    new Vue({
+        el: '#app2',
+        methods: {
+            logging(name) {
+                console.log(name + 'がクリックされました')
+            }
+        }
+    })
+</script>
+</body>
+</html>
