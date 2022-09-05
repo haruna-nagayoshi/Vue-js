@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <style>
+        .custom-duration {
+            transition: opacity 1s;
+        }
+
+        .custom-invisible {
+            opacity: 0;
+        }
+
+        .custom-visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <h2>カスタムクラスによるトランジション</h2>
+    <button @click="show = !show">
+        Toggle
+    </button>
+    <transition
+            name="custom-classes-transition"
+            enter-class="custom-invisible"
+            enter-active-class="custom-duration"
+            enter-to-class="custom-visible"
+            leave-class="custom-visible"
+            leave-active-class="custom-duration"
+            leave-to-class="custom-invisible"
+    >
+        <p v-if="show">hello</p>
+    </transition>
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            show: false,
+        },
+    })
+</script>
+</body>
+</html>
