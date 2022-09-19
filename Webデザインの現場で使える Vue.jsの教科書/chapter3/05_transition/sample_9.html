@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <style>
+        .v-enter-active {
+            transition: all .5s ease;
+        }
+        .v-leave-active {
+            transition: all 1s
+        }
+        .v-leave-active {
+            position: absolute;
+        }
+        .v-enter, .v-leave-to {
+            opacity: 0;
+        }
+        .v-leave-to {
+            transform: translateX(15px);
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <h2>要素間のトランジション キー変化によるトランジション</h2>
+    <button @click="count++">
+        +1
+    </button>
+    <transition>
+        <p :key="count">{{ count }}</p>
+    </transition>
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            count: 0,
+        },
+    })
+</script>
+</body>
+</html>
