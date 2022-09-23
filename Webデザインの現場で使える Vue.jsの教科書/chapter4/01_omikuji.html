@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>おみくじ</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+</head>
+<body>
+<div id="app" class="container">
+    <h1>おみくじ</h1>
+    <button @click="draw">{{ buttonText }}</button>
+    <div v-if="result">
+        結果は・・・{{ result }}です！
+    </div>
+</div>
+<script>
+    const omikuji = ['大吉', '吉', '凶'];
+
+    new Vue({
+        el: '#app',
+        data: {
+            result: null,
+            buttonText: 'おみくじを引く'
+        },
+        methods: {
+            draw() {
+                const index = Math.floor(Math.random() * omikuji.length);
+                // methodsプロパティ内のメソッド内のthisはdataプロパティで定義したプロパティを参照する。
+                this.result = omikuji[index];
+                this.buttonText = 'おみくじをもう一度引く'
+            },
+        }
+    })
+</script>
+</body>
+</html>
