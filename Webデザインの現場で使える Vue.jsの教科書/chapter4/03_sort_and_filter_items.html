@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <style>
+        th > div.sorted.desc::after {
+            display: inline-block;
+            content: '▼';
+        }
+        th > div.sorted.asc::after {
+            display: inline-block;
+            content: '▲';
+        }
+        th > div {
+            cursor: pointer;
+        }
+        .search label {
+            display: inline-block;
+            margin-right: 1em;
+        }
+        .search input[type="text"],
+        .search select{
+            width: 20em;
+        }
+        .color {
+            display: inline-block;
+            height: 1em;
+            width: 1em;
+            margin-right: 2px;
+        }
+        #orange + label {
+            color: orange;
+        }
+        #purple + label {
+            color: purple;
+        }
+        #blue + label {
+            color: blue;
+        }
+        #green + label {
+            color: green;
+        }
+        #pink + label {
+            color: pink;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app" class="container">
+    <h1>商品の並び替え・絞り込み</h1>
+    <main class="main">
+        <section class="block">
+            <h3 class="block-title">商品一覧</h3>
+            <div class="block-body">
+                <div>
+                    <section class="search">
+                        <label>商品名</label>
+                        <input type="text" v-model="filter.name">
+                        <br>
+
+                        <label>価格</label>
+                        <input type="checkbox" id="under" value="under" v-model="filter.price">
+                        <label for="under">200円未満</label>
+                        <input type="checkbox" id="over" value="over" v-model="filter.price">
+                        <label for="over">200円以上</label>
+                        <br>
+
+                        <label>色</label>
+                        <input type="checkbox" id="all_year" value="all_year" v-model="filter.season">
+                        <label for="all_year">通年</label>
+                        <input type="checkbox" id="spring" value="spring" v-model="filter.season">
+                        <label for="spring">春</label>
+                        <input type="checkbox" id="summer" value="summer" v-model="filter.season">
+                        <label for="summer">夏</label>
+                        <input type="checkbox" id="autumn" value="autumn" v-model="filter.season">
+                        <label for="autumn">秋</label>
+                        <input type="checkbox" id="winter" value="winter" v-model="filter.season">
+                        <label for="winter">冬</label>
+                    </section>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>
+                                <div @click="sortBy('id')" :class="sortClass('id')">No.</div>
+                            </th>
+                            <th>
+                                <div @click="sortBy('name')" :class="sortClass('name')">商品名</div>
+                            </th>
+                            <th>
+                                <div @click="sortBy('price')" :class="sortClass('price')">価格</div>
+                            </th>
+                            <th>
+                                <div @click="sortBy('season')" :class="sortClass('season')">販売時期</div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="bread in result">
+                            <td>
+                                {{ bread.id }}
+                            </td>
+                            <td>
+                                {{ bread.name }}
+                            </td>
+                            <td>
+                                {{ bread.price }}
+                            </td>
+                            <td :style="'color:' + bread.season.color">
+                                {{ bread.season.name }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+<script>
+    const seasons = {
+        all_year: {
+            id: 1,
+            code: 'all_year',
+            name: '通年',
+            color: 'purple',
+        },
+        spring: {
+            id: 2,
+            code: 'spring',
+            name: '春',
+            color: 'pink',
+        },
+        summer: {
+            id: 3,
+            code: 'summer',
+            name: '夏',
+            color: 'green',
+        },
+        autumn: {
+            id: 4,
+            code: 'autumn',
+            name: '秋',
+            color: 'orange',
+        },
+        winter: {
+            id: 5,
+            code: 'winter',
+            name: '冬',
+            color: 'blue',
+        },
+    }
+
+    const breads = [
+        {
+            id: 1,
+            name: 'こしあんぱん',
+            price: 100,
+            season: seasons.all_year,
+        },
+        {
+            id: 2,
+            name: 'つぶあんぱん',
+            price: 100,
+            season: seasons.all_year,
+        },
+        {
+            id: 3,
+            name: 'しろあんぱん',
+            price: 120,
+            season: seasons.all_year,
+        },
+        {
+            id: 4,
+            name: 'チョコぱん',
+            price: 100,
+            season: seasons.all_year,
+        },
+        {
+            id: 5,
+            name: 'さくらあんぱん',
+            price: 150,
+            season: seasons.spring,
+        },
+        {
+            id: 6,
+            name: 'レモンパイ',
+            price: 200,
+            season: seasons.summer,
+        },
+        {
+            id: 7,
+            name: 'にくきゅうぱん',
+            price: 150,
+            season: seasons.all_year,
+        },
+        {
+            id: 8,
+            name: 'オレンジクリームパン',
+            price: 150,
+            season: seasons.summer,
+        },
+        {
+            id: 9,
+            name: 'くるみパン',
+            price: 170,
+            season: seasons.autumn,
+        },
+        {
+            id: 10,
+            name: 'マロンマフィン',
+            price: 250,
+            season: seasons.autumn,
+        },
+        {
+            id: 11,
+            name: 'ガトーインビジブル',
+            price: 300,
+            season: seasons.winter,
+        },
+    ];
+
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                filter: {
+                    name: '',
+                    price: [],
+                    season: [],
+                },
+                sort: {
+                    key: '',
+                    isAsc: false
+                }
+            }
+        },
+        computed: {
+            result() {
+                // sort()を使うと元の配列も並び変えてしまうためslice()で配列をコピーしてからソートする。
+                let list = breads.slice();
+
+                if (this.filter.name) {
+                    list = list.filter(bread => bread.name.indexOf(this.filter.name) > -1);
+                }
+
+                if (this.filter.price.length > 0) {
+                    list = list.filter(bread => {
+                        if (this.filter.price.indexOf('under') > -1) {
+                            if (bread.price < 200) {
+                                return true;
+                            }
+                        }
+
+                        if (this.filter.price.indexOf('over') > -1) {
+                            if (bread.price >= 200) {
+                                return true;
+                            }
+                        }
+
+                        return  false
+                    })
+                }
+
+                if (this.filter.season.length > 0) {
+                    list = list.filter(bread => {
+                        if (this.filter.season.indexOf('all_year') > -1) {
+                            if (bread.season.code === 'all_year') {
+                                return true;
+                            }
+                        }
+
+                        if (this.filter.season.indexOf('spring') > -1) {
+                            if (bread.season.code === 'spring') {
+                                return true;
+                            }
+                        }
+
+                        if (this.filter.season.indexOf('summer') > -1) {
+                            if (bread.season.code === 'summer') {
+                                return true;
+                            }
+                        }
+
+                        if (this.filter.season.indexOf('autumn') > -1) {
+                            if (bread.season.code === 'autumn') {
+                                return true;
+                            }
+                        }
+
+                        if (this.filter.season.indexOf('winter') > -1) {
+                            if (bread.season.code === 'winter') {
+                                return true;
+                            }
+                        }
+                    })
+                }
+
+                if (this.sort.key === 'season') {
+                    return list.sort((a, b) => {
+                        a = a[this.sort.key].id;
+                        b = b[this.sort.key].id;
+
+                        return (a === b ? 0 : (a > b ? 1 : -1)) * (this.sort.isAsc ? 1 : -1);
+                    });
+                } else {
+                    return list.sort((a, b) => {
+                        a = a[this.sort.key];
+                        b = b[this.sort.key];
+
+                        return (a === b ? 0 : (a > b ? 1 : -1)) * (this.sort.isAsc ? 1 : -1);
+                    });
+                }
+            }
+        },
+        methods: {
+            sortBy(key) {
+                if (this.sort.key === key) {
+                    this.sort.isAsc = !this.sort.isAsc;
+                } else {
+                    this.sort.isAsc = true;
+                }
+
+                this.sort.key = key
+            },
+            sortClass(key) {
+                return this.sort.key === key ? `sort ${this.sort.isAsc ? 'asc' : 'desc'}` : '';
+            }
+        }
+    })
+</script>
+</body>
+</html>
