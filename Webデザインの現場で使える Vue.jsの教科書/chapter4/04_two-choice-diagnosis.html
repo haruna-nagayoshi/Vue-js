@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <style>
+        .container {
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .answerList {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            text-align: center;
+        }
+
+        .answerList.start li {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .answerList li {
+            display: inline-block;
+            width: 48%;
+            text-align: center;
+        }
+
+        .answerList li a {
+            display: block;
+            padding: 20px;
+            border-radius: 4px;
+            background: #ff8c00;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* フェードイン */
+        .fade-enter-active {
+            transition: opacity 1s;
+        }
+
+        .fade-enter,
+        .fade-leave-to {
+            opacity: 0;
+        }
+
+        /* スライドアニメーションを適用する場合は以下のコメントアウトを外す */
+        /*.fade-enter-active {*/
+        /*  box-sizing: border-box;*/
+        /*  width: 100%;*/
+        /*  transition: all 0.8s ease;*/
+        /*}*/
+
+        /*.fade-leave-active {*/
+        /*  position: absolute;*/
+        /*  box-sizing: border-box;*/
+        /*  width: 100%;*/
+        /*  transition: all 0.8s ease;*/
+        /*  opacity: 0;*/
+        /*}*/
+
+        /*.fade-enter {*/
+        /*  transform: translateX(-100%);*/
+        /*}*/
+
+        /*.fade-leave-to {*/
+        /*  transform: translateX(100%);*/
+        /*}*/
+    </style>
+</head>
+<body>
+<div id="app" class="container">
+    <h1>二択診断</h1>
+    <main class="main">
+        <section class="block">
+            <h3 class="block-title">ストレス診断</h3>
+            <div class="block-body">
+                <div class="contents view">
+                    <!-- 初期表示 -->
+                    <transition name="fade">
+                        <main class="main top-page" v-show="status === 0">
+                            <p class="leadText">あなたのストレス度をチェックします。</p>
+                            <ul class="answerList start">
+                                <li><a href="#" @click.prevent.stop="start" class="">スタート</a></li>
+                            </ul>
+                        </main>
+                    </transition>
+                    <!-- 質問表示 -->
+                    <transition name="fade" v-for="question in questions">
+                        <main class="main top-page" v-show="question.number === status">
+                            <b>質問{{ question.number }}</b>
+                            <p class="leadText">{{ question.sentence }}</p>
+                            <ul class="answerList">
+                                <li><a href="#" @click.prevent.stop="answer('yes')">はい</a></li>
+                                <li><a href="#" @click.prevent.stop="answer('no')">いいえ</a></li>
+                            </ul>
+                        </main>
+                    </transition>
+                    <!-- 診断結果 -->
+                    <transition name="fade">
+                        <main class="main top-page" v-show="isFinish">
+                            <b>診断結果</b>
+                            <p class="leadText">{{ result.sentence }}</p>
+                            <a href="#" @click.prevent.stop="reset">最初からやり直す</a>
+                        </main>
+                    </transition>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+<script>
+    const questions = [
+        {
+            number: 1,
+            point: 1,
+            sentence: '非常にたくさんの仕事をしなければならない',
+        },
+        {
+            number: 2,
+            point: 2,
+            sentence: '時間内に仕事を処理しきれない',
+        },
+        {
+            number: 3,
+            point: 2,
+            sentence: '高度な知識や技術が必要な仕事だ',
+        },
+        {
+            number: 4,
+            point: 2,
+            sentence: '自分のペースで仕事ができない',
+        },
+        {
+            number: 5,
+            point: 3,
+            sentence: '職場の雰囲気が悪い',
+        },
+    ]
+
+    const results = [
+        {
+            min: 0,
+            max: 4,
+            sentence: 'あなたはそれほどストレスを感じていません',
+        },
+        {
+            min: 5,
+            max: 7,
+            sentence: '少しストレスを感じているようです。意識的にストレス解消に努めてください',
+        },
+        {
+            min: 8,
+            max: 10,
+            sentence: '非常に強くストレスを感じているようです。医師による診察を受けてください',
+        },
+    ]
+
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                status: 0,
+                sum: 0,
+                questions: questions,
+            }
+        },
+        computed: {
+            question() {
+                return questions.filter(question => question.number === this.status).shift()
+            },
+            result() {
+                return results.filter((result) => {
+                    return this.sum >= result.min && this.sum <= result.max
+                }).shift()
+            },
+            isFinish() {
+                return this.status > questions.length
+            }
+        },
+        methods: {
+            start() {
+                this.status = 1
+            },
+            answer(type) {
+                let question = questions.filter((question) => {
+                    return question.number === this.status
+                }).shift()
+
+                if (type === 'yes') {
+                    this.sum += question.point
+                }
+
+                this.status++
+            },
+            reset() {
+                this.status = 0
+                this.sum = 0
+            }
+        }
+    })
+</script>
+</body>
+</html>
