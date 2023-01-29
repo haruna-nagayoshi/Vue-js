@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>タブ切り替え</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+          crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+    <style>
+        .tab {
+            list-style: none;
+            border-bottom: 1px solid #ccc;
+        }
+        .tab-item {
+            border: 1px solid transparent;
+            border-bottom: none;
+            display: inline-block;
+            margin: 0 0 -1px;
+            border-radius: 4px 4px 0 0;
+        }
+        .tab-item:hover {
+            border-color: #ccc;
+        }
+        .tab-item a {
+            display: block;
+            padding: 10px 15px;
+        }
+        .tab-item.active {
+            border-color: #ccc;
+            background-color: #fff;
+        }
+        .tab-item.active a {
+            color: #606c76;
+        }
+    </style>
+</head>
+<body>
+<div id="app" class="container">
+    <h1>タブ</h1>
+    <ul class="tab">
+        <li class="tab-item" v-for="(item, index) in items" :key="index" :class="{ active: active === index }">
+            <a href="#" @click.prevent="activate(index)">{{ item.title }}</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane" v-for="(item, index) in items" :key="index" v-show="active === index" v-html="item.text"></div>
+    </div>
+</div>
+<script>
+    const pageIdsApiUrl = 'https://ja.wikipedia.org/w/api.php?format=json&action=query&origin=*&list=random&rnnamespace=0&rnlimit=4'
+    const textApiUrl = 'https://ja.wikipedia.org/w/api.php?format=json&action=query&origin=*&prop=extracts&explaintext=1&exsectionformat=plain&exlimit=1'
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                items: [],
+                active: 0,
+            }
+        },
+        mounted() {
+            let pages = []
+            let pageIds = []
+            axios.get(pageIdsApiUrl).then((response) => {
+                pages = response.data.query.random
+
+                for (const page of pages) {
+                    pageIds.push(page.id)
+                }
+
+                for (const pageId of pageIds) {
+                    axios.get(textApiUrl + '&pageids=' + pageId).then((response) => {
+                        const page = response.data.query.pages[pageId]
+                        this.items.push({
+                            id: page.pageid,
+                            title: page.title,
+                            text: page.extract
+                        })
+                    })
+                }
+            })
+        },
+        methods: {
+            activate(index) {
+                this.active = index
+            }
+        },
+    });
+</script>
+</body>
+</html>
